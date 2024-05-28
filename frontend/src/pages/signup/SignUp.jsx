@@ -1,7 +1,29 @@
 import React from "react";
 import GenderCheckbox from "./genderCheckbox";
+import { Link } from "react-router-dom";
+import { useState } from "react";
+import useSignup from "../../hooks/useSignup";
 
 const SignUp = () => {
+  const [inputs, setInputs] = useState({
+    fullName: "",
+    username: "",
+    password: "",
+    confirmPassword: "",
+    gender: "",
+  });
+
+  const { loading, signup } = useSignup();
+
+  const handleCheckboxChange = (gender) => {
+    setInputs({ ...inputs, gender });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await signup(inputs);
+  };
+
   return (
     <div className="flex flex-col items-center justify-center min-w-96 mx-auto ">
       <div className="w-full p-6 rounded-lg shadow-md bg-gray-400 bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-0">
@@ -9,7 +31,7 @@ const SignUp = () => {
           SignUp
           <span className="text-blue-500"> ChatApp</span>
         </h1>
-        <form>
+        <form onSubmit={handleSubmit}>
           <label className="input input-bordered flex items-center gap-2 mt-4">
             <svg
               viewBox="0 0 16 16"
@@ -18,7 +40,15 @@ const SignUp = () => {
             >
               <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" />
             </svg>
-            <input type="text" className="grow" placeholder="Full Name" />
+            <input
+              type="text"
+              className="grow"
+              placeholder="Full Name"
+              value={inputs.fullName}
+              onChange={(e) =>
+                setInputs({ ...inputs, fullName: e.target.value })
+              }
+            />
           </label>
           <label className="input input-bordered flex items-center gap-2 mt-4">
             <svg
@@ -28,7 +58,15 @@ const SignUp = () => {
             >
               <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" />
             </svg>
-            <input type="text" className="grow" placeholder="Username" />
+            <input
+              type="text"
+              className="grow"
+              placeholder="Username"
+              value={inputs.username}
+              onChange={(e) =>
+                setInputs({ ...inputs, username: e.target.value })
+              }
+            />
           </label>
           <label className="input input-bordered flex items-center gap-2 mt-4">
             <svg
@@ -42,7 +80,15 @@ const SignUp = () => {
                 clipRule="evenodd"
               />
             </svg>
-            <input type="password" className="grow" placeholder="Password" />
+            <input
+              type="password"
+              className="grow"
+              placeholder="Password"
+              value={inputs.password}
+              onChange={(e) =>
+                setInputs({ ...inputs, password: e.target.value })
+              }
+            />
           </label>
           <label className="input input-bordered flex items-center gap-2 mt-4">
             <svg
@@ -60,19 +106,32 @@ const SignUp = () => {
               type="password"
               className="grow"
               placeholder="Confirm Password"
+              value={inputs.confirmPassword}
+              onChange={(e) =>
+                setInputs({ ...inputs, confirmPassword: e.target.value })
+              }
             />
           </label>
 
-          <GenderCheckbox />
+          <GenderCheckbox
+            onCheckboxChange={handleCheckboxChange}
+            selectedGender={inputs.gender}
+          />
 
-          <a
-            href="#"
+          <Link
+            to="/login"
             className="text-sm hover:underline hover:text-blue-600  mt-2 inline-block"
           >
             Already have an account?
-          </a>
+          </Link>
           <div>
-            <button className="btn btn-block btn-sm mt-2">SignUp</button>
+            <button className="btn btn-block btn-sm mt-2" disabled={loading}>
+              {loading ? (
+                <span className="loading loading-spinner"></span>
+              ) : (
+                "Sign Up"
+              )}
+            </button>
           </div>
         </form>
       </div>
